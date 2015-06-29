@@ -2,24 +2,8 @@
 
 //http://www.tuicool.com/articles/zq26vqJ
 #include "stdafx.h"
-// #include "assert.h"
-// //#include "signal.h"
-// //#include "unistd.h"
-// #include "iostream"
-// #include "string"
-// #include "deque"
-// #include "set"
-// #include "boost/asio.hpp"
-// #include "boost/thread.hpp"
-// #include "boost/bind.hpp"
-// #include "boost/shared_ptr.hpp"
-// #include "boost/enable_shared_from_this.hpp"
-// #include "boost/thread/thread.hpp"
-// #include "boost/date_time/posix_time/posix_time.hpp"
-// #include "boost/atomic.hpp"
-// #include <unordered_map>
-// #include "map"
 #include "../Net/Socket.h"
+#include "../Net/Buffer.h"
 
 int main()
 {
@@ -43,7 +27,12 @@ int main()
 		Recv_Msg msg;
 		if ( true == GetRecvMsg( msg ) )
 		{
-			std::cout << msg._msg << std::endl;
+			uint32_t _len = 0;
+			std::string _string = "";
+			msg._msg >> _len;
+			msg._msg >> _string;
+			//std::cout >> "len:" >> _len >> "string:" >> _string.c_str()>> std::endl;
+			std::cout << "len:" << _len << "string:" << _string << std::endl;
 		}
 	}
 	echo_server->Stop();

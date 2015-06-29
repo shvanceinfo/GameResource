@@ -137,10 +137,10 @@ namespace
 	struct Recv_Msg
 	{
 		boost::shared_ptr<boost::asio::ip::tcp::socket> pSocket_;
-		std::string _msg;
+		MessageBuffer _msg;
 
-		Recv_Msg() :pSocket_(NULL), _msg(""){}
-		Recv_Msg(boost::shared_ptr<boost::asio::ip::tcp::socket> _p, std::string _temp) : pSocket_(_p), _msg(_temp){}
+		Recv_Msg() :pSocket_(NULL), _msg(){}
+		Recv_Msg(boost::shared_ptr<boost::asio::ip::tcp::socket> _p, MessageBuffer _temp) : pSocket_(_p), _msg(_temp){}
 		Recv_Msg(const Recv_Msg &_temp) : pSocket_(_temp.pSocket_), _msg(_temp._msg){}
 		Recv_Msg& operator=(const Recv_Msg& msg)
 		{
@@ -225,21 +225,21 @@ namespace
 		{
 			if (!error)
 			{
-				{
-					LOCK_GUARD(socket_mutex);
-					socket_->async_receive(boost::asio::buffer(msgbuf_.GetReadPointer(), msgbuf_.GetRemainingSpace()), boost::bind(&Connection::ReadHandler, shared_from_this(), _1, _2));
-				}
+				LOCK_GUARD(socket_mutex);
+				socket_->async_receive(boost::asio::buffer(msgbuf_.GetReadPointer(), msgbuf_.GetRemainingSpace()), boost::bind(&Connection::ReadHandler, shared_from_this(), _1, _2));
+				msgbuf_.WriteComplete(bytes_transferred);
 
-				if ( uint32_t _len = msgbuf_.read<uint32_t>(sizeof(uint32_t)))
+				uint32_t _len = ntohl(msgbuf_.read<uint32_t>(0));
+				if (_len && bytes_transferred > 0)
 				{
 					//TODO不知道会不会死锁,socket_mutex需要测试一下
-					if ( _len >= msgbuf_.GetActiveSize() )
+					if ( _len <= msgbuf_.GetActiveSize() )
 					{
-						uint8_t *byptes = new uint8_t[_len+1];
-						msgbuf_.read(byptes,_len);
-						std::string _temp;
+						MessageBuffer _buffer;
+						msgbuf_.read(_buffer.GetReadPointer(), _len);
 						msgbuf_.Normalize();
-						Recv_Msg msg(socket_, _temp);
+						_buffer.WriteComplete(_len);
+						Recv_Msg msg(socket_, _buffer);
 						LOCK_GUARD(Recv_Msg_Mutex);
 						Recv_Msg_List.push_back(msg);
 					}

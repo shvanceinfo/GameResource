@@ -28,6 +28,29 @@ public:
 	{
 	}
 
+	MessageBuffer(std::vector<uint8_t> &_buffer) : _rpos(0), _wpos(0)
+	{
+		if ( this->_buffer.size() < _buffer.size() )
+		{
+			this->_buffer.resize(_buffer.size());
+		}
+		this->_buffer = std::move(_buffer);
+	}
+
+	MessageBuffer &operator=(const MessageBuffer &right)
+	{
+		if ( this == &right )
+		{
+			return *this;
+		}
+
+		this->_rpos = right._rpos;
+		this->_wpos = right._wpos;
+		this->_buffer = std::move(right._buffer);
+
+		return *this;
+	}
+
 	void Reset()
 	{
 		_wpos = 0;
@@ -142,18 +165,21 @@ public:
 	{
 		uint16_t _temp = htons(value);
 		append<uint16_t>(_temp);
+		return *this;
 	}
 
 	MessageBuffer &operator<<(uint32_t value)
 	{
 		uint32_t _temp = htonl(value);
 		append<uint32_t>(_temp);
+		return *this;
 	}
 
 	MessageBuffer &operator<<(uint64_t value)
 	{
 		uint64_t _temp = htonll(value);
 		append<uint64_t>(_temp);
+		return *this;
 	}
 
 	MessageBuffer &operator<<(int8_t value)
