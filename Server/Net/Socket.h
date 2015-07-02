@@ -1,110 +1,3 @@
-// #ifndef __SOCKET_H__
- // #define __SOCKET_H__
- // 
- // #include "boost/asio/ip/tcp.hpp"
- // #include "boost/asio/write.hpp"
- // #include "boost/asio/read.hpp"
- // #include "atomic"
- // #include "mutex"
- // #include "queue"
- // 
- // using boost::asio::ip::tcp;
- // 
- // class MessageBuffer;
- // 
- // template< class T >
- // class Socket : public std::enable_shared_from_this<T>
- // {
- // 	explicit Socket(tcp::socket && socket) :_socket(std::move(socket)), _remoteAddress(socket.remote_endpoint().address()), _remotePort(socket.remote_endpoint().port())
- // 	{
- // 		_buffer = new std::shared_ptr<MessageBuffer>;
- // 		_session = new std::shared_ptr<T>;
- // 	}
- // 
- // 	virtual ~Socket()
- // 	{
- // 		boost::system::error_code error;
- // 		_socket.close(error);
- // 	}
- // 
- // 	boost::asio::ip::address GetRemoteAddress()
- // 	{
- // 		return _remoteAddress;
- // 	}
- // 
- // 	uint16_t GetRemotePort()
- // 	{
- // 		return _remotePort;
- // 	}
- // 
- // 	void AsyncRead()
- // 	{
- // 		_buffer->Normalize();
- // 		_socket.async_read_some( boost::asio::buffer(_buffer->GetWritePointer(), MESSAGE_MAX_LENGTH),
- // 			std::bind(&Socket<T>::)
- // 	}
- // 
- // 	void ReadHandlerInternal(boost::system::error_code error, size_t transferedBytes)
- // 	{
- // 		if ( error)
- // 		{
- // 			CloseSocket();
- // 			return;
- // 		}
- // 
- // 		_buffer->WriteComplete(transferedBytes);
- // 		ReadHandler();
- // 	}
- // 
- // 	virtual void ReadHandler() = 0;
- // 
- // 	void CloseSocket()
- // 	{
- // 		if (_closed )
- // 		{
- // 			return;
- // 		}
- // 
- // 		boost::system::error_code shutdownError;
- // 		_socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
- // 		if ( shutdownError)
- // 		{
- // 			//TODO
- // 		}
- // 	}
- // 
- // 	void QueuePacket(MessageBuffer &&buffer, std::unique_lock<std::mutex> &guard)
- // 	{
- // 		_writeQueue.push(std::move(buffer));
- // 	}
- // 
- // 	bool AsyncProcessQueue(std::unique_lock<std::mutex>&)
- // 	{
- // 		if ( _isWritingAsync)
- // 		{
- // 			return false;
- // 		}
- // 
- // 		MessageBuffer & buffer = _writeQueue.front();
- // 		//////////////////////////////////////////////////////////////////////////
- // 		//////////////////////////////////////////////////////////////////////////
- // 	}
- // 
- // private:
- // 	tcp::socket _socket;
- // 	boost::asio::ip::address _remoteAddress;
- // 	uint16_t _remotePort;
- // 	std::shared_ptr<MessageBuffer> _buffer;
- // 	std::shared_ptr<T> _session;
- // 	std::queue<MessageBuffer> _writeQueue;
- // 
- // 	bool _closed;
- // 	bool _closing;
- // };
- // 
- //  #endif
-
-
 #ifndef __SOCKET_H__
 #define __SOCKET_H__
 
@@ -131,7 +24,7 @@
 
 #define LOCK_GUARD(x) boost::lock_guard<boost::mutex> guard(x);
 
-namespace
+namespace 
 {
 
 	struct Recv_Msg
@@ -371,7 +264,7 @@ namespace
 					LOCK_GUARD(conn_set_mutex_);
 					conn_set_.insert(new_conn);
 				}
-
+				
 				TimerPtr socket_time(new boost::asio::deadline_timer(*io_service_));
 				socket_time->expires_from_now(boost::posix_time::seconds(1));
 				socket_time->async_wait(boost::bind(&EchoServer::CheckSocketStatus, shared_from_this(), new_conn, socket_time, _1));
@@ -446,7 +339,5 @@ namespace
 		io_service->run();
 	}
 }
-
-
 
 #endif

@@ -25,7 +25,7 @@ int main()
 	while (!g_shutdown_server)
 	{
 		Recv_Msg msg;
-		if ( true == GetRecvMsg( msg ) )
+		if (true == GetRecvMsg(msg))
 		{
 			uint32_t _len = 0;
 			std::string _string = "";

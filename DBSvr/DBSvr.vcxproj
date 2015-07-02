@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E0716CE7-865C-4D20-9258-AF095EA0F9D0}</ProjectGuid>
+    <ProjectGuid>{E04FB4B0-7A9D-4885-B72D-D5DE69B16884}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Server</RootNamespace>
+    <RootNamespace>DBSvr</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -68,16 +68,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Bin</OutDir>
-    <IncludePath>D:\boost\boost_1_57_0\boost_1_57_0;C:\Program Files\MySQL\MySQL Server 5.6\include;D:\boost_1_57_0\boost_1_57_0\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost\boost_1_57_0\boost_1_57_0\stage\lib;C:\Program Files\MySQL\MySQL Server 5.6\lib;D:\boost_1_57_0\boost_1_57_0\stage\lib;$(LibraryPath)</LibraryPath>
-    <ReferencePath>D:\work\self source\GameResource\Server;$(ReferencePath)</ReferencePath>
+    <IncludePath>D:\boost_1_57_0\boost_1_57_0;C:\Program Files %28x86%29\MySQL\MySQL Server 5.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\boost_1_57_0\boost_1_57_0\stage\lib;C:\Program Files %28x86%29\MySQL\MySQL Server 5.7\lib;$(LibraryPath)</LibraryPath>
+    <ReferencePath>C:\Program Files %28x86%29\MySQL\MySQL Server 5.7;$(ReferencePath)</ReferencePath>
+    <OutDir>..\Server\Bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\boost_1_57_0\boost_1_57_0;C:\Program Files\MySQL\MySQL Server 5.6\include;D:\boost\boost_1_57_0\boost_1_57_0;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\MySQL\MySQL Server 5.6\lib;D:\boost_1_57_0\boost_1_57_0\stage\lib;$(LibraryPath)</LibraryPath>
-    <ReferencePath>D:\work\self source\GameResource\Server;$(ReferencePath)</ReferencePath>
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\MySQL\MySQL Server 5.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\MySQL\MySQL Server 5.7\lib;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,6 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,8 +110,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,15 +150,17 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Net\Buffer.h" />
-    <ClInclude Include="..\Net\Socket.h" />
+    <ClInclude Include="MySql\Connection.h" />
+    <ClInclude Include="MySql\Result.h" />
+    <ClInclude Include="MySql\Row.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Net\Buffer.cpp" />
-    <ClCompile Include="..\Net\Socket.cpp" />
-    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="DBSvr.cpp" />
+    <ClCompile Include="MySql\Connection.cpp" />
+    <ClCompile Include="MySql\Result.cpp" />
+    <ClCompile Include="MySql\Row.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
